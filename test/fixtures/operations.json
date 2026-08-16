@@ -1,0 +1,7 @@
+[
+  { "op": "match-pair", "topId": "top-1", "bottomId": "bottom-1" },
+  { "op": "fill-gap", "gapId": "gap-1", "answer": "worked" },
+  { "op": "categorize", "optionId": "option-1", "targetId": "target-1" },
+  { "op": "sequence", "positions": { "item-a": 1, "item-b": 2 } },
+  { "op": "choose", "allIds": ["option-a", "option-b"], "optionIds": ["option-b"], "multi": false }
+]

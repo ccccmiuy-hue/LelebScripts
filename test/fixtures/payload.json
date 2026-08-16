@@ -1,0 +1,75 @@
+{
+  "eventHistory": {
+    "events": [
+      {
+        "type": "activity-sent",
+        "data": {
+          "activitySent": {
+            "stepId": "step-1",
+            "index": 0,
+            "activity": {
+              "id": "activity-1",
+              "tasks": [
+                { "expectedResponse": { "type": "multiple-choice" } }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "type": "task-response-assessed",
+        "data": {
+          "taskResponseAssessed": {
+            "taskId": "task-1",
+            "response": {
+              "type": "multiple-choice",
+              "contents": {
+                "multipleChoice": {
+                  "contents": {
+                    "option-a": { "assessment": { "expectedUserInput": "not-selected" } },
+                    "option-b": { "assessment": { "expectedUserInput": "selected" } }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "activity-sent",
+        "data": {
+          "activitySent": {
+            "stepId": "step-2",
+            "index": 1,
+            "activity": {
+              "id": "activity-2",
+              "tasks": [
+                {
+                  "expectedResponse": {
+                    "type": "matching",
+                    "contents": {
+                      "matching": {
+                        "top-1": { "userInput": "bottom-1" }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "expectedResponse": {
+          "type": "sequencing",
+          "contents": {
+            "sequencing": {
+              "item-b": { "id": "item-b", "userInput": 2 },
+              "item-a": { "id": "item-a", "userInput": 1 }
+            }
+          }
+        }
+      }
+    ]
+  }
+}
