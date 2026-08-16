@@ -1,0 +1,21 @@
+{
+  "name": "mikael-api-only",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Cliente API-only para o contrato observado no pacote Mikael/Efekta.",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test",
+    "dev": "vercel dev",
+    "deploy": "vercel --prod",
+    "check": "node --check src/cli.js && node --check src/mikael-client.js && node --check src/ops.js && node --check src/efekta-http.js && node --check src/flow.js && node --check api/_lib/http.js && node --check api/_lib/mikael.js && node --check api/health.js && node --check api/license.js && node --check api/normalize.js && node --check api/solve.js",
+    "license": "node src/cli.js license",
+    "ops": "node src/cli.js ops",
+    "normalize": "node src/cli.js normalize",
+    "plan": "node src/cli.js plan",
+    "efekta": "node src/cli.js efekta"
+  }
+}

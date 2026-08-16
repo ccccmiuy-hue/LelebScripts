@@ -1,0 +1,70 @@
+{
+  "mikael": {
+    "baseUrl": "https://mikael.store",
+    "licenseKey": "",
+    "deviceId": "api-device-local",
+    "build": "bmspgs5gz",
+    "component": "mkc-cf13efce2cff79dd",
+    "timeoutMs": 10000
+  },
+  "context": {
+    "lessonId": "",
+    "activityId": ""
+  },
+  "efekta": {
+    "baseUrl": "https://learn.better.efekta.com",
+    "headers": {
+      "Authorization": "Bearer COLOQUE_UM_TOKEN_AUTORIZADO",
+      "Cookie": "COLOQUE_A_SESSAO_AUTORIZADA"
+    },
+    "lessonRequest": {
+      "method": "POST",
+      "path": "/SUBSTITUA_PELO_ENDPOINT_DOCUMENTADO",
+      "body": {
+        "lessonId": "{{lessonId}}"
+      }
+    }
+  },
+  "actionRequests": {
+    "matching.answer": {
+      "method": "POST",
+      "path": "/SUBSTITUA_PELO_ENDPOINT_DE_RESPOSTA",
+      "body": {
+        "activityId": "{{activityId}}",
+        "answer": "{{payload}}"
+      }
+    },
+    "gapfill.answer": {
+      "method": "POST",
+      "path": "/SUBSTITUA_PELO_ENDPOINT_DE_RESPOSTA",
+      "body": {
+        "activityId": "{{activityId}}",
+        "answer": "{{payload}}"
+      }
+    },
+    "categorization.answer": {
+      "method": "POST",
+      "path": "/SUBSTITUA_PELO_ENDPOINT_DE_RESPOSTA",
+      "body": {
+        "activityId": "{{activityId}}",
+        "answer": "{{payload}}"
+      }
+    },
+    "sequencing.answer": {
+      "method": "POST",
+      "path": "/SUBSTITUA_PELO_ENDPOINT_DE_RESPOSTA",
+      "body": {
+        "activityId": "{{activityId}}",
+        "answer": "{{payload}}"
+      }
+    },
+    "multiple-choice.answer": {
+      "method": "POST",
+      "path": "/SUBSTITUA_PELO_ENDPOINT_DE_RESPOSTA",
+      "body": {
+        "activityId": "{{activityId}}",
+        "answer": "{{payload}}"
+      }
+    }
+  }
+}
