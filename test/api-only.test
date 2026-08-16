@@ -1,0 +1,78 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
+import { MikaelClient } from '../src/mikael-client.js';
+import { buildOperationPlan, extractAnswerHints, summarizePayload } from '../src/ops.js';
+import { EfektaHttpClient } from '../src/efekta-http.js';
+
+const payload = JSON.parse(await readFile(new URL('./fixtures/payload.json', import.meta.url), 'utf8'));
+const operations = JSON.parse(await readFile(new URL('./fixtures/operations.json', import.meta.url), 'utf8'));
+
+function response(body, status = 200) {
+  return new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });
+}
+
+test('extrai dicas de resposta sem tocar em DOM', () => {
+  const hints = extractAnswerHints(payload);
+  assert.equal(hints.matching['top-1'], 'bottom-1');
+  assert.deepEqual(hints.sequencing['item-a|item-b'], ['item-a', 'item-b']);
+  assert.deepEqual(hints.multipleChoice['task-1']['option-b'], 'selected');
+  assert.equal(summarizePayload(payload).activityCount, 2);
+});
+
+test('converte operações Mikael em plano API-only', () => {
+  const plan = buildOperationPlan(operations);
+  assert.equal(plan.apiOnly, true);
+  assert.deepEqual(plan.counts, {
+    'match-pair': 1,
+    'fill-gap': 1,
+    categorize: 1,
+    sequence: 1,
+    choose: 1,
+  });
+  assert.equal(plan.actions[0].kind, 'matching.answer');
+  assert.equal(plan.actions.at(-1).kind, 'multiple-choice.answer');
+});
+
+test('faz license/check e agent/ops com o contrato observado', async () => {
+  const calls = [];
+  const client = new MikaelClient({
+    licenseKey: 'test-license',
+    deviceId: 'test-device',
+    fetchImpl: async (url, init) => {
+      calls.push({ url, init });
+      if (url.includes('/api/license/check')) return response({ ok: true, plan: 'test' });
+      return response({ ok: true, ops: operations });
+    },
+  });
+  const result = await client.solvePayload(payload);
+  assert.equal(result.license.ok, true);
+  assert.equal(result.ops.length, operations.length);
+  assert.equal(calls.length, 2);
+  assert.match(calls[0].url, /k=test-license/);
+  assert.equal(calls[1].init.method, 'POST');
+  const requestBody = JSON.parse(calls[1].init.body);
+  assert.equal(requestBody.k, 'test-license');
+  assert.equal(requestBody.d, 'test-device');
+  assert.deepEqual(requestBody.payload, payload);
+});
+
+test('adaptador HTTP aceita templates e mantém dry-run sem envio', async () => {
+  const calls = [];
+  const client = new EfektaHttpClient({
+    baseUrl: 'https://example.invalid',
+    fetchImpl: async (url, init) => {
+      calls.push({ url, init });
+      return response({ eventHistory: { events: [] } });
+    },
+  });
+  const result = await client.executePlan(
+    { actions: [{ kind: 'gapfill.answer', payload: { gapId: 'g1', answer: 'x' } }] },
+    { 'gapfill.answer': { method: 'POST', path: '/answer', body: { id: '{{payload.gapId}}' } } },
+    {},
+    { dryRun: true },
+  );
+  assert.equal(result[0].status, 'dry-run');
+  assert.equal(result[0].request.body.id, 'g1');
+  assert.equal(calls.length, 0);
+});
